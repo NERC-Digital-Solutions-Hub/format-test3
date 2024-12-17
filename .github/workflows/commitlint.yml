@@ -21,6 +21,11 @@ jobs:
       - name: Install Commitlint
         run: npm install --save-dev @commitlint/{config-conventional,cli}
 
-      - name: Lint commits
+      - name: Get commit range
+        id: commits
         run: |
-          git log --format=%H ${{ github.event.before }}..${{ github.sha }} | xargs -I {} npx commitlint --verbose --commit {}
+          echo "FROM=$(git rev-parse HEAD~1 || echo HEAD)" >> $GITHUB_ENV
+          echo "TO=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Lint commits
+        run: npx commitlint --from=${{ env.FROM }} --to=${{ env.TO }}
