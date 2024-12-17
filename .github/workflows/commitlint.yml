@@ -3,7 +3,7 @@ name: Commitlint
 on:
   push:
     branches:
-      - '**' # Run on commits to all branches
+      - '**'
 
 jobs:
   commitlint:
@@ -21,11 +21,6 @@ jobs:
       - name: Install Commitlint
         run: npm install --save-dev @commitlint/{config-conventional,cli}
 
-      - name: Get commit range
-        id: commits
+      - name: Lint commits in the push
         run: |
-          echo "FROM=$(git rev-parse HEAD~1 || echo HEAD)" >> $GITHUB_ENV
-          echo "TO=$(git rev-parse HEAD)" >> $GITHUB_ENV
-
-      - name: Lint commits
-        run: npx commitlint --from=${{ env.FROM }} --to=${{ env.TO }}
+          git log --format=%H | xargs -I {} npx commitlint --verbose --commit {}
