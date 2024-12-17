@@ -3,8 +3,7 @@ name: Commitlint
 on:
   push:
     branches:
-      - main
-      - dev
+      - '**'
 
 jobs:
   commitlint:
@@ -19,9 +18,14 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install dependencies
+      - name: Install Commitlint
         run: npm install --save-dev @commitlint/{config-conventional,cli}
 
-      - name: Lint commits
+      - name: Get commit range
+        id: commits
         run: |
-          npx commitlint --from=${{ github.event.before }} --to=HEAD
+          echo "FROM=$(git rev-parse HEAD~1 || echo HEAD)" >> $GITHUB_ENV
+          echo "TO=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+      - name: Lint commits
+        run: npx commitlint --from=${{ env.FROM }} --to=${{ env.TO }}
