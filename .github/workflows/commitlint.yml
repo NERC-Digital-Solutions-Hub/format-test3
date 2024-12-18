@@ -26,4 +26,4 @@ jobs:
 
       - name: Lint commits in the push
         run: |
-          git log --format=%H | xargs -I {} npx commitlint --verbose --commit {}
+          git log --format=%H | xargs -I {} sudo npx commitlint --verbose --commit {}
