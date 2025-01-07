@@ -35,5 +35,9 @@ jobs:
             echo "FROM=${{ github.event.before }}" >> $GITHUB_ENV
           fi
           echo "TO=${{ github.sha }}" >> $GITHUB_ENV
+          
       - name: Lint commits
         run: npx commitlint --verbose --from=${{ env.FROM }} --to=${{ env.TO }}
+        
+      - name: Run dotnet format (Check Only)
+        run: dotnet format --verify-no-changes
