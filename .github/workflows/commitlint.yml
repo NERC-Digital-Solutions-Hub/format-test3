@@ -15,15 +15,25 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+        with:
+          fetch-depth: 0
+        
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install Commitlint
-        run: npm install --save-dev @commitlint/{config-conventional,cli}
+      - name: Fix permissions for Node binaries
+        run: chmod +x ./node_modules/.bin/*
 
-      - name: Lint commits in the push
+      - name: Determine commit range
+        id: commit_range
         run: |
-          git log --format=%H | xargs -I {} sudo npx commitlint --verbose --commit {}
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            echo "FROM=$(git rev-parse HEAD^ || echo HEAD)" >> $GITHUB_ENV
+          else
+            echo "FROM=${{ github.event.before }}" >> $GITHUB_ENV
+          fi
+          echo "TO=${{ github.sha }}" >> $GITHUB_ENV
+      - name: Lint commits
+        run: npx commitlint --verbose --from=${{ env.FROM }} --to=${{ env.TO }}
