@@ -39,5 +39,5 @@ jobs:
       - name: Lint commits
         run: npx commitlint --verbose --from=${{ env.FROM }} --to=${{ env.TO }}
         
-      - name: Run dotnet format (Check Only)
-        run: dotnet format --verify-no-changes
+      - name: Run dotnet format for Specific Solution
+        run: dotnet format ./DotNet/TestFormatProject/TestFormatProject.sln --verify-no-changes
