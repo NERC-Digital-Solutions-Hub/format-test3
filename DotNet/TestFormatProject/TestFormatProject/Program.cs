@@ -1,5 +1,7 @@
-﻿namespace TestFormatProject {
-    internal class Program {
+﻿namespace TestFormatProject
+{
+    internal class Program
+    {
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
